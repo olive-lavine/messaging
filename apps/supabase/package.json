@@ -1,0 +1,31 @@
+{
+  "name": "@messaging/supabase",
+  "scripts": {
+    "supabase": "supabase",
+    "status": "supabase status",
+    "start": "supabase start",
+    "stop": "supabase stop",
+    "version": "supabase --version",
+    "db:start": "supabase db start",
+    "db:test": "supabase db test",
+    "db:lint": "supabase db lint",
+    "supabase:db:diff": "supabase db diff --schema=public,storage,auth --file ",
+    "supabase:db:reset": "supabase db reset --workdir ../",
+    "types:generate": "supabase gen types typescript --schema=public --local > ./schema/database-generated.types.ts",
+    "types:lint": "eslint --fix ./schema/database-generated.types.ts",
+    "types:pretty": "prettier --write ./schema/database-generated.types.ts",
+    "predev": "supabase migration up"
+  },
+  "devDependencies": {
+    "@messaging/eslint-config": "*",
+    "@messaging/prettier-config": "*",
+    "supabase": "^1.183.5"
+  },
+  "prettier": "@messaging/prettier-config",
+  "eslintConfig": {
+    "extends": "@messaging/eslint-config",
+    "env": {
+      "browser": false
+    }
+  }
+}

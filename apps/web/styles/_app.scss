@@ -1,0 +1,43 @@
+$border-color: var(--mantine-color-tl-gray-1);
+$full: 100%;
+
+$border-color-2: var(--mantine-color-tl-gray-2);
+$border-color-1: var(--mantine-color-tl-gray-1);
+
+$border-primary: 1px solid $border-color-2;
+
+$title-primary: var(--mantine-color-tl-slate-blue-3);
+$primary-text: var(--mantine-color-tl-slate-blue-6);
+$primary-text-dark: var(--mantine-color-tl-slate-blue-8);
+$primary-text-light: var(--mantine-color-tl-slate-blue-4);
+
+$radius-md: var(--mantine-radius-md);
+$radius-lg:  var(--mantine-radius-lg);
+
+$bg-gray: var(--mantine-color-tl-gray-0);
+$bg-gray-darker: var(--mantine-color-tl-gray-2);
+$bg-white: var(--mantine-color-white);
+$bg-hover: var(--mantine-color-tl-gray-2);
+$bg-hover-darker: var(--mantine-color-tl-gray-3);
+$bg-slate-blue: var(--mantine-color-tl-slate-blue-0);
+
+$w-full: 100%;
+$header-height: 64px + (25px * 2);
+$device-small: var(--mantine-breakpoint-sm);
+
+$font-lg: var(--mantine-font-size-lg);
+
+$avatar-glow-effect: linear-gradient(
+    to top right,
+    rgba(249, 248, 113, 1),
+    rgba(255, 111, 145, 1),
+    rgba(214, 93, 177, 1)
+);
+
+@mixin shrink {
+  flex-shrink: 1;
+}
+
+@mixin grow {
+  flex-grow: 1;
+}

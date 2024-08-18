@@ -1,0 +1,64 @@
+{
+  "name": "messaging",
+  "version": "0.1.0",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "start": "next start",
+    "lint": "eslint .",
+    "ts:check": "tsc --noEmit --incremental true"
+  },
+  "volta": {
+    "node": "20.11.1"
+  },
+  "dependencies": {
+    "@mantine/core": "^7.10.1",
+    "@mantine/form": "^7.10.1",
+    "@mantine/hooks": "^7.10.1",
+    "@mantine/notifications": "^7.10.1",
+    "@supabase/auth-ui-react": "^0.4.7",
+    "@supabase/auth-ui-shared": "^0.1.8",
+    "@supabase/ssr": "^0.1.0",
+    "@supabase/supabase-js": "^2.39.6",
+    "@t3-oss/env-nextjs": "^0.10.1",
+    "@tabler/icons-react": "^3.6.0",
+    "next": "^14.2.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-error-boundary": "^4.0.13",
+    "twilio": "^5.2.2",
+    "type-fest": "^4.10.2",
+    "validator": "^13.12.0",
+    "zod": "3.22.4",
+    "zod-form-data": "^2.0.2"
+  },
+  "devDependencies": {
+    "@messaging/eslint-config": "*",
+    "@messaging/prettier-config": "*",
+    "@messaging/supabase": "*",
+    "@messaging/typescript-config": "*",
+    "@types/node": "^20",
+    "@types/node-sass": "^4.11.7",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/validator": "^13.12.0",
+    "eslint-config-next": "^14.2.3",
+    "sass": "^1.77.6"
+  },
+  "prettier": "@messaging/prettier-config",
+  "eslintConfig": {
+    "extends": [
+      "next",
+      "next/core-web-vitals",
+      "@messaging/eslint-config"
+    ],
+    "env": {
+      "browser": true
+    }
+  }
+}

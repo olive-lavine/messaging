@@ -1,0 +1,8 @@
+{
+  "name": "@messaging/typescript-config",
+  "version": "0.0.1",
+  "description": "Shared typescript configuration for messaging.",
+  "dependencies": {
+    "typescript": "^5.0.4"
+  }
+}

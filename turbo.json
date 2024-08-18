@@ -1,0 +1,11 @@
+{
+    "$schema": "https://turbo.build/schema.json",
+    "tasks": {
+      "predev": {},
+      "dev": {},
+      "ts:check": {},
+      "supabase:db:diff": {},
+      "supabase:db:reset": {},
+      "lint": {}
+    }
+  }

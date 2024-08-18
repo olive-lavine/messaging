@@ -1,0 +1,21 @@
+{
+  "extends": "@messaging/typescript-config/tsconfig.json",
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "index.d.ts"
+  ],
+  "exclude": ["node_modules", ".next"],
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  }
+}

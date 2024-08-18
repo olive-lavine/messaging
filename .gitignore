@@ -2,15 +2,18 @@
 
 # dependencies
 /node_modules
+/gateway/node_modules/
+node_modules
 /.pnp
 .pnp.js
 .yarn/install-state.gz
+
 
 # testing
 /coverage
 
 # next.js
-/.next/
+.next
 /out/
 
 # production
@@ -27,6 +30,8 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env
+/gateway/.env
 
 # vercel
 .vercel
@@ -34,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# snaplet snapshots
+.snaplet/snapshots/*
+
+# mesh build
+.mesh
+
+# turborepo stuff
+.turbo

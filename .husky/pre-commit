@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo '🦺 Styling, testing and building your project before committing'
+
+npm run ts:check ||
+  (
+    echo '🚧 Typescript Types Checks Failed. 🚧'
+    false
+  )
+npm run lint-staged ||
+  (
+    echo '🛑 ESLint Check Failed. 🛑'
+    false
+  )
+npm run db:lint -w @messaging/supabase ||
+  (
+    echo '🚨 Database integrity Check Failed. 🚨'
+    false
+  )
+
+echo '✅ All checks passed.  Proceeding with commit 🏗️'
