@@ -7,8 +7,6 @@ export const env = createEnv({
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
     TWILIO_ACCOUNT_SID: z.string(),
     TWILIO_AUTH_TOKEN: z.string(),
-    TWILIO_API_KEY_SID: z.string(),
-    TWILIO_API_KEY_SECRET: z.string(),
     LOCAL_APP_URL: z.string().url().optional(), // Optional because it should be provided by Vercel in production
   },
   client: {

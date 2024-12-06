@@ -15,6 +15,7 @@ export async function sendMessage(
   const twilio = getTwilioServerClient();
 
   const { text } = formData;
+  console.log(imageUrl);
 
   try {
     // Fetch contacts

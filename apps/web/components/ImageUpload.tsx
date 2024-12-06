@@ -11,20 +11,22 @@ import {
 export default function ImageUpload({
   file,
   filePath,
+  fileUrl,
   handleUpload,
   handleDelete,
 }: {
   file: File | null;
   filePath: string | null;
+  fileUrl: string | null;
   handleUpload: (file: File | null) => Promise<void>;
   handleDelete: (filePath: string | null) => Promise<void>;
 }) {
   return (
     <SimpleGrid cols={2} verticalSpacing={16} spacing='xl'>
       <Group>
-        {file ? (
+        {fileUrl ? (
           <Image
-            src={URL.createObjectURL(file)}
+            src={fileUrl}
             alt='MMS Preview'
             width={150}
             height={150}
