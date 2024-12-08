@@ -60,7 +60,7 @@ export function useForm<Values extends Record<string, any>>(args: {
       args.options.callbackAfter();
     }
 
-    form.resetDirty();
+    form.reset();
     setErrorMessage('');
     setIsLoading(false);
     return;

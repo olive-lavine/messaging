@@ -2,11 +2,12 @@ import {
   Button,
   FileButton,
   Group,
-  Image,
   SimpleGrid,
   Space,
   Stack,
 } from '@mantine/core';
+
+import Image from 'next/image';
 
 export default function ImageUpload({
   file,
@@ -24,23 +25,18 @@ export default function ImageUpload({
   return (
     <SimpleGrid cols={2} verticalSpacing={16} spacing='xl'>
       <Group>
-        {fileUrl ? (
-          <Image
-            src={fileUrl}
-            alt='MMS Preview'
-            width={150}
-            height={150}
-            radius='md'
-          />
-        ) : (
-          <Image
-            src={null}
-            alt='No image selected'
-            width={150}
-            height={150}
-            radius='md'
-          />
-        )}
+        <Image
+          priority
+          src={
+            file
+              ? URL.createObjectURL(file)
+              : 'https://placehold.co/600x400/png?text=Placeholder'
+          }
+          alt='MMS Preview'
+          width={400}
+          height={400}
+          style={{ objectFit: 'contain' }}
+        />
         <Stack>
           <FileButton
             onChange={(f) => handleUpload(f)}

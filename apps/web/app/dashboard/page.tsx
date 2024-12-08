@@ -12,8 +12,12 @@ const supabase = getSupabaseClientComponentClient();
 
 export default function NewMessagePage() {
   const [file, setFile] = useState<File | null>(null);
-  const [filePath, setFilePath] = useState<string | null>(null);
-  const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [filePath, setFilePath] = useState<string | null>(
+    'https://c8.alamy.com/comp/B3MG67/britney-spears-us-pop-singer-B3MG67.jpg'
+  );
+  const [fileUrl, setFileUrl] = useState<string | null>(
+    'https://c8.alamy.com/comp/B3MG67/britney-spears-us-pop-singer-B3MG67.jpg'
+  );
   const handleUpload = async (file: File | null) => {
     if (!file) {
       console.error('No file selected for upload.');
@@ -57,23 +61,15 @@ export default function NewMessagePage() {
     }
   };
 
-  const handleDelete = async (filePath: string | null) => {
+  const handleDelete = async () => {
     if (!filePath) {
       console.error('No file path specified for deletion.');
       return;
     }
 
     try {
-      const { error: deleteError, data: deleteData } = await supabase.storage
-        .from('images') // Ensure this matches the correct bucket name
-        .remove([filePath]);
-
-      if (deleteError) {
-        throw new Error(`Delete failed: ${deleteError.message}`);
-      }
-
-      console.log('File deleted successfully:', deleteData);
       setFilePath(null);
+      setFileUrl(null);
       setFile(null);
     } catch (error) {
       console.error('Error during file deletion:', error);
@@ -81,10 +77,7 @@ export default function NewMessagePage() {
     }
   };
 
-  const sendMessageWithImageUrl = sendMessage.bind(
-    null,
-    'https://c8.alamy.com/comp/B3MG67/britney-spears-us-pop-singer-B3MG67.jpg'
-  );
+  const sendMessageWithImageUrl = sendMessage.bind(null, fileUrl);
 
   const { mantineForm, onSubmit, isLoading, errorMessage } =
     useForm<ZMessageData>({
@@ -94,6 +87,7 @@ export default function NewMessagePage() {
         initialValues: {
           text: '',
         },
+        callbackAfter: handleDelete,
       },
     });
 
