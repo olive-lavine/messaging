@@ -1,0 +1,58 @@
+name: Check DB Migrations Order Consistency
+
+on:
+  pull_request:
+
+jobs:
+  migration-order-consistency:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.git_commit_hash }}
+      - name: Check DB migrations order consistency
+        shell: bash
+        run: |
+          migration_dir="apps/supabase/migrations"
+          source_branch="origin/${GITHUB_HEAD_REF}"
+          target_branch="origin/${GITHUB_BASE_REF}"
+
+          diff=$(git diff --relative=$migration_dir --name-status $target_branch $source_branch)
+          if [[ -z "$diff" ]]; then
+            echo "No changes detected."
+            exit 0
+          fi
+
+          new_files=$(echo "$diff" | awk '$1 == "A" {print $2}')
+          last_migration=$(ls $migration_dir | grep -v -F -x "$new_files" | tail -n 1)
+
+          get_timestamp() {
+            echo "$1" | cut -d'_' -f1
+          }
+
+          # if migrations was changed or new was added
+          while IFS=$'\t' read -r status filename; do
+            echo "status: $status; filename: $filename"
+
+            # split filename by _ and take the timestamp
+            file_timestamp=$(get_timestamp "$filename")
+
+            # if file is added, check the timestamp of the last existing migration and compare;
+            if [[ "$status" == "A" ]]; then
+              last_migration_timestamp=$(get_timestamp "$last_migration")
+              # if new timestamp of the new migration is smaller -> exit 1
+              if [[ "$file_timestamp" < "$last_migration_timestamp" ]]; then
+                echo "Error: The timestamp $file_timestamp in $filename is older than existing migrations."
+                exit 1
+              fi
+
+            # disallow changes to the existing migration files i.e deleted/updated/moved etc
+            elif [[ "$status" != "A" ]]; then
+              echo "Error: Modifying or deleting existing migrations is not allowed."
+              exit 1
+            fi
+          done <<<"$diff"
+
+          echo "All checks passed."
+          exit 0
