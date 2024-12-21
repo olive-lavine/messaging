@@ -1,113 +1,121 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import ImageUpload from '@/components/ImageUpload';
+import { useForm } from '@/hooks/use-form';
+import { getSupabaseClientComponentClient } from '@/lib/supabase/client-component';
+import { zMessageData, ZMessageData } from '@/schema/zod';
+import { Alert, Button, TextInput } from '@mantine/core';
+import { useState } from 'react';
+import { sendMessage } from './action';
+
+const supabase = getSupabaseClientComponentClient();
+
+export default function NewMessagePage() {
+  const [file, setFile] = useState<File | null>(null);
+  const [filePath, setFilePath] = useState<string | null>(
+    'https://c8.alamy.com/comp/B3MG67/britney-spears-us-pop-singer-B3MG67.jpg'
+  );
+  const [fileUrl, setFileUrl] = useState<string | null>(
+    'https://c8.alamy.com/comp/B3MG67/britney-spears-us-pop-singer-B3MG67.jpg'
+  );
+  const handleUpload = async (file: File | null) => {
+    if (!file) {
+      console.error('No file selected for upload.');
+      return;
+    }
+
+    const validTypes = ['image/png', 'image/jpeg'];
+    if (!validTypes.includes(file.type)) {
+      console.error('Unsupported file type. Please upload a PNG or JPEG.');
+      return;
+    }
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${Math.random()}.${fileExt}`;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('images') // Ensure this is the correct bucket name
+        .upload(filePath, file, {
+          contentType: file.type,
+          cacheControl: '3600',
+        });
+
+      if (uploadError) {
+        throw new Error(`Upload failed: ${uploadError.message}`);
+      }
+
+      const { data: imageData } = await supabase.storage
+        .from('images')
+        .getPublicUrl(filePath);
+
+      console.log(imageData.publicUrl);
+
+      setFileUrl(imageData.publicUrl);
+      setFile(file);
+      setFilePath(filePath);
+      console.log('File uploaded successfully:', filePath);
+    } catch (error) {
+      console.error('Error during file upload:', error);
+      alert('Failed to upload the file. Please try again.');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!filePath) {
+      console.error('No file path specified for deletion.');
+      return;
+    }
+
+    try {
+      setFilePath(null);
+      setFileUrl(null);
+      setFile(null);
+    } catch (error) {
+      console.error('Error during file deletion:', error);
+      alert('Failed to delete the file. Please try again.');
+    }
+  };
+
+  const sendMessageWithImageUrl = sendMessage.bind(null, fileUrl);
+
+  const { mantineForm, onSubmit, isLoading, errorMessage } =
+    useForm<ZMessageData>({
+      schema: zMessageData,
+      action: sendMessageWithImageUrl,
+      options: {
+        initialValues: {
+          text: '',
+        },
+        callbackAfter: handleDelete,
+      },
+    });
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <form onSubmit={onSubmit}>
+      <TextInput
+        label='Text'
+        placeholder='Enter your message'
+        {...mantineForm.getInputProps('text')}
+      />
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+      <ImageUpload
+        file={file}
+        filePath={filePath}
+        fileUrl={fileUrl}
+        handleUpload={handleUpload}
+        handleDelete={handleDelete}
+      />
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+      {errorMessage && (
+        <Alert color='red' mt='md'>
+          {errorMessage}
+        </Alert>
+      )}
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      <Button type='submit' mt='md' loading={isLoading}>
+        Send Message
+      </Button>
+    </form>
   );
 }
