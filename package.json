@@ -26,13 +26,13 @@
   },
   "packageManager": "npm@10.2.4",
   "devDependencies": {
+    "@messaging/eslint-config": "*",
+    "@messaging/prettier-config": "*",
     "husky": "^8.0.0",
     "lint-staged": "^15.2.5",
-    "typescript": "^5.0.4",
-    "vercel": "^33.5.1",
     "turbo": "^2.0.3",
-    "@messaging/prettier-config": "*",
-    "@messaging/eslint-config": "*"
+    "typescript": "^5.0.4",
+    "vercel": "^33.5.1"
   },
   "prettier": "@messaging/prettier-config",
   "eslintConfig": {
@@ -40,5 +40,8 @@
     "env": {
       "browser": false
     }
+  },
+  "dependencies": {
+    "zod-csv": "^0.0.8"
   }
 }
