@@ -13,8 +13,8 @@ export default function Login() {
 
   useEffect(() => {
     if (session) {
-      console.log('redirecting to /');
-      router.push('/');
+      console.log('redirecting to /dashboard');
+      router.push('/dashboard');
     }
   }, [session, router]);
 

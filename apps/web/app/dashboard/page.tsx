@@ -4,9 +4,9 @@ import ImageUpload from '@/components/ImageUpload';
 import { useForm } from '@/hooks/use-form';
 import { getSupabaseClientComponentClient } from '@/lib/supabase/client-component';
 import { zMessageData, ZMessageData } from '@/schema/zod';
-import { Alert, Button, TextInput } from '@mantine/core';
+import { Alert, Button, Container, Textarea } from '@mantine/core';
 import { useState } from 'react';
-import { sendMessage } from './action';
+import { sendMessage } from '../action';
 
 const supabase = getSupabaseClientComponentClient();
 
@@ -92,30 +92,35 @@ export default function NewMessagePage() {
     });
 
   return (
-    <form onSubmit={onSubmit}>
-      <TextInput
-        label='Text'
-        placeholder='Enter your message'
-        {...mantineForm.getInputProps('text')}
-      />
+    <Container size='100%'>
+      <form onSubmit={onSubmit}>
+        <Textarea
+          label='Message'
+          placeholder='Enter your message'
+          autosize
+          minRows={3}
+          maxRows={4}
+          {...mantineForm.getInputProps('text')}
+        />
 
-      <ImageUpload
-        file={file}
-        filePath={filePath}
-        fileUrl={fileUrl}
-        handleUpload={handleUpload}
-        handleDelete={handleDelete}
-      />
+        <ImageUpload
+          file={file}
+          filePath={filePath}
+          fileUrl={fileUrl}
+          handleUpload={handleUpload}
+          handleDelete={handleDelete}
+        />
 
-      {errorMessage && (
-        <Alert color='red' mt='md'>
-          {errorMessage}
-        </Alert>
-      )}
+        {errorMessage && (
+          <Alert color='red' mt='md'>
+            {errorMessage}
+          </Alert>
+        )}
 
-      <Button type='submit' mt='md' loading={isLoading}>
-        Send Message
-      </Button>
-    </form>
+        <Button type='submit' mt='md' loading={isLoading}>
+          Send Message
+        </Button>
+      </form>
+    </Container>
   );
 }
